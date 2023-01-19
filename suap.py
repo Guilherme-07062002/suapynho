@@ -1,5 +1,5 @@
 import mysql.connector
-
+from time import sleep
 
 # Criando classe Banco
 class Suapynho:
@@ -75,12 +75,37 @@ class Suapynho:
         sql2 = 'SELECT id_disciplina from matriculas where id_aluno = %s'
         self.cursor.execute(sql2, (id[0][0], ))
         resultado = self.cursor.fetchall()
+        ids_disciplinas = []
         for elemento in resultado:
-            print(elemento[0])
+            ids_disciplinas.append(elemento[0])
+        # print(ids_disciplinas)
+        sql3 = 'SELECT nome FROM disciplinas where id = %s'
+        sql4 = 'SELECT nome FROM alunos WHERE matricula = %s'
+        self.cursor.execute(sql4, (matricula_aluno, ))
+        nome = self.cursor.fetchall()[0][0]
+        print(f'\nO aluno {nome} está matriculado nas disciplinas: ')
+        for disciplina in ids_disciplinas:
+            self.cursor.execute(sql3, (disciplina, ))
+            print(' - ', self.cursor.fetchall()[0][0])
+        sleep(3)
+        print('')
+        
 
     def listaChamada(self, id_disciplina):
-        sql = 'SELECT id_aluno FROM matriculas where id_disciplina = %s'
+        sql = 'SELECT id_aluno FROM matriculas WHERE id_disciplina = %s'
         self.cursor.execute(sql, (id_disciplina, ))
         res = self.cursor.fetchall()
+        id_alunos = []
+        sql2 = 'SELECT nome FROM alunos WHERE id = %s'
         for element in res:
-            print(element[0])
+            id_alunos.append(element[0])
+        sql3 = 'SELECT nome FROM disciplinas WHERE id = %s'
+        self.cursor.execute(sql3, (id_disciplina , ))
+        nomeDisciplina = self.cursor.fetchall()[0][0]
+        print(f'\nAlunos matriculados na disciplina {nomeDisciplina}:')
+        for aluno in id_alunos:
+            self.cursor.execute(sql2, (aluno, ))
+            print(' - ', self.cursor.fetchall()[0][0])
+        sleep(3)
+        print('')
+
